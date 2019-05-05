@@ -1,18 +1,34 @@
+namespace java bank_thrift
 typedef i64 Money
 typedef i64 ID
 typedef string Key
-
 #Enums
 enum Membership {
     STANDARD = 0,
     PREMIUM = 1
 }
+enum Currency {
+    USD = 0,
+    PLN = 1,
+    EUR = 2,
+    GBP = 3,
+    CHF = 4,
+}
+
 
 #Structs
 struct BankClient {
     1: ID id,
     2: Membership membership,
-    3: Money balance
+    3: Money income,
+    4: Currency currency,
+	5: Key key,
+}
+
+struct LoanParams {
+    1: Money money,
+    2: i32 months,
+    3: Currency currency
 }
 
 struct TransactionResponse {
@@ -28,7 +44,7 @@ exception InvalidOperation {
 
 #Services
 service AccountCreator {
-    BankClient create_account(1: string pesel, 2: Money balance);
+    BankClient create_account(1: required ID id, 2: required Money monthly_income, 3: Currency currency) throws (1: InvalidOperation op);
 }
 
 service StandardClient {
@@ -40,5 +56,5 @@ service StandardClient {
 }
 
 service PremiumClient extends StandardClient {
-    TransactionResponse request_loan(1: ID id, 2: Key key, 3: Money amount);
+    TransactionResponse request_loan(1: ID id, 2: Key key, 3: LoanParams loan_params);
 }
