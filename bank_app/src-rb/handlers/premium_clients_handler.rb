@@ -17,6 +17,12 @@ class PremiumClientsHandler
     @premium_clients[id] ? true : false
   end
 
+  def get_balance(id, key)
+    puts "#{Time.now} getting client's: #{id} balance..."
+    raise_unauthorised unless validate_acc(id, key)
+    @premium_clients[id].income
+  end
+
   def put_money(id, key, money)
     raise_unauthorised unless validate_acc(id, key)
     @premium_clients[id].income += money
@@ -43,6 +49,7 @@ class PremiumClientsHandler
   end
 
   def request_loan(id, key, loan_params)
+    puts "#{Time.now} request for a loan from #{id}, with params: #{loan_params}"
     raise_unauthorised unless validate_acc(id, key)
     res = TransactionResponse.new
     if permit_loan(id, loan_params)

@@ -14,6 +14,8 @@ class AccountCreatorHandler
     @prm_cls_srv = PremiumClient::Client.new(prm_cls_proto_multiplex)
     @std_cls_srv = StandardClient::Client.new(std_cls_proto_multiplex)
     transport.open
+    # Proof that multiplexing in ruby works - in python3 not
+    puts @prm_cls_srv.exists(10)
   end
 
   def create_account(id, income, currency)
@@ -46,7 +48,7 @@ class AccountCreatorHandler
     # Raise exists
     puts "#{Time.now} creating service raised exception: account with given credentials exists"
     x = InvalidOperation.new
-    x.why = 'Client with given pesel already exists'
+    x.why = 'Client with given ID already exists'
     x.arg_number = 1
     raise x
   end
